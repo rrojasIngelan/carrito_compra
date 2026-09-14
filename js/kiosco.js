@@ -51,6 +51,99 @@
   };
   var historial = [];
 
+  /* ----- Protector de pantalla ------------------------------------------- */
+  var protector = {
+    espera: 90000, intervalo: 7000, esperaRespuesta: 20,
+    temporizador: null, rotador: null, cuentaAtras: null,
+    activo: false, avisoActivo: false, iniciado: false, ultimoId: null
+  };
+  var frasesProtector = ["Date un gusto. Te lo mereces", "El sabor que estabas esperando", "Tu favorito está a un toque", "Hoy se disfruta algo rico", "Haz de este momento algo delicioso"];
+  function mostrarProductoProtector() {
+    var disponibles = productos.filter(function (p) { return p.img && p.img !== IMG_FALLBACK; });
+    if (!disponibles.length) return;
+    if (disponibles.length > 1) disponibles = disponibles.filter(function (p) { return p.id !== protector.ultimoId; });
+    var producto = disponibles[Math.floor(Math.random() * disponibles.length)];
+    protector.ultimoId = producto.id;
+    $("#protector-producto-img").attr({ src: producto.img, alt: producto.nombre }).off("error").on("error", function () { onerr(this); });
+    $("#protector-producto").text(producto.nombre);
+    $("#protector-descripcion").text(producto.descripcion || "Preparado para disfrutar cada bocado");
+    $("#protector-precio").text(clp(producto.precio));
+    $("#protector-descubre").text("Descubre lo mejor de " + producto.catNombre);
+    $("#protector-frase").text(frasesProtector[Math.floor(Math.random() * frasesProtector.length)]);
+    var pantalla = document.getElementById("protector-pantalla");
+    pantalla.classList.remove("producto-entrando");
+    void pantalla.offsetWidth;
+    pantalla.classList.add("producto-entrando");
+  }
+  function activarProtector() {
+    if (protector.activo || !productos.length) return;
+    protector.activo = true;
+    mostrarProductoProtector();
+    $("#protector-pantalla").addClass("activo").attr("aria-hidden", "false");
+    protector.rotador = setInterval(mostrarProductoProtector, protector.intervalo);
+  }
+  function cerrarAvisoInactividad() {
+    protector.avisoActivo = false;
+    clearInterval(protector.cuentaAtras);
+    $("#aviso-inactividad").removeClass("activo").attr("aria-hidden", "true");
+  }
+  function activarAvisoInactividad() {
+    if (protector.avisoActivo) return;
+    protector.avisoActivo = true;
+    var restantes = protector.esperaRespuesta;
+    $("#inactividad-segundos").text(restantes);
+    $("#aviso-inactividad").addClass("activo").attr("aria-hidden", "false");
+    $("#inactividad-continuar").trigger("focus");
+    protector.cuentaAtras = setInterval(function () {
+      restantes--;
+      $("#inactividad-segundos").text(Math.max(0, restantes));
+      if (restantes <= 0) {
+        cerrarAvisoInactividad();
+        reiniciar();
+      }
+    }, 1000);
+  }
+  function programarInactividad() {
+    clearTimeout(protector.temporizador);
+    if (protector.avisoActivo) return;
+    protector.temporizador = setTimeout(function () {
+      if ($("body").attr("data-vista") === "atract") activarProtector();
+      else activarAvisoInactividad();
+    }, protector.espera);
+  }
+  function registrarActividad() {
+    if (protector.avisoActivo) return;
+    if (protector.activo) {
+      protector.activo = false;
+      clearInterval(protector.rotador);
+      $("#protector-pantalla").removeClass("activo").attr("aria-hidden", "true");
+    }
+    programarInactividad();
+  }
+  function iniciarProtector() {
+    if (!usarImagenesWS) return;
+    protector.iniciado = true;
+    ["pointerdown", "mousemove", "keydown", "touchstart"].forEach(function (evento) {
+      document.addEventListener(evento, function (e) {
+        var estabaActivo = protector.activo;
+        registrarActividad();
+        if (estabaActivo && evento !== "mousemove") {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+    });
+    registrarActividad();
+  }
+  $("#inactividad-continuar").on("click", function () {
+    cerrarAvisoInactividad();
+    registrarActividad();
+  });
+  $("#inactividad-salir").on("click", function () {
+    cerrarAvisoInactividad();
+    reiniciar();
+  });
+
   /* ======================================================================
      Utilidades
      ====================================================================== */
@@ -126,7 +219,12 @@
       if (!data || !data.list) throw new Error('respuesta sin "list"');
       productos = normalizar(data.list);
       categorias = agruparCategorias(productos);
-      if (usarImagenesWS && resultados[1]) categorias = combinarCategorias(categorias, resultados[1]);
+      if (usarImagenesWS && resultados[1]) {
+        categorias = combinarCategorias(categorias, resultados[1]);
+        var categoriasVisibles = {};
+        categorias.forEach(function (c) { categoriasVisibles[c.slug] = true; });
+        productos = productos.filter(function (p) { return categoriasVisibles[p.catSlug]; });
+      }
       if (categoriasLimpias) aplicarCategoriasLimpias();
       arranque();
     })
@@ -138,7 +236,9 @@
     });
 
   function normalizar(list) {
-    return list.map(function (it) {
+    return list.filter(function (it) {
+      return String(it.estatus) !== "1";
+    }).map(function (it) {
       return {
         id: it.id_item,
         slug: it.slug || ("item-" + it.id_item),
@@ -179,23 +279,34 @@
       c.imagenLimpia = true;
     });
   }
+  function claveCategoria(slug) {
+    var clave = String(slug || "").trim();
+    return clave === "alitas_picantes" ? "alitas" : clave;
+  }
   function combinarCategorias(base, listado) {
-    var usadas = {};
-    var ordenadas = listado.slice().sort(function (a, b) {
+    var usadas = {}, ocultas = {};
+    listado.forEach(function (c) {
+      var clave = claveCategoria(c.slug);
+      if (clave && String(c.estatus) === "1") ocultas[clave] = true;
+    });
+    var ordenadas = listado.filter(function (c) {
+      return String(c.estatus) !== "1";
+    }).slice().sort(function (a, b) {
       return (Number(a.orden) || 0) - (Number(b.orden) || 0);
     });
     var resultado = ordenadas.map(function (c) {
       var slug = String(c.slug || "").trim();
-      if (!slug || usadas[slug]) return null;
-      usadas[slug] = true;
-      var existente = base.find(function (item) { return item.slug === slug; });
+      var clave = claveCategoria(slug);
+      if (!slug || ocultas[clave] || usadas[clave]) return null;
+      usadas[clave] = true;
+      var existente = base.find(function (item) { return claveCategoria(item.slug) === clave; });
       var imagen = existente ? existente.img : IMG_FALLBACK;
       if (c.url_imagen_categoria) {
         try { imagen = new URL(c.url_imagen_categoria, imgResource || window.location.href).href; }
         catch (e) { console.warn("Ruta de imagen de categoría inválida", slug); }
       }
       return {
-        slug: slug,
+        slug: existente ? existente.slug : slug,
         nombre: String(c.descripcion || "").trim() || (existente && existente.nombre) || slug.replace(/_/g, " "),
         descripcion: String(c.descripcion || "").trim(),
         modoVista: Number(c.modo_vista),
@@ -205,10 +316,52 @@
       };
     }).filter(Boolean);
     // Conservar las categorías con productos que aún no figuran en el nuevo servicio.
-    return resultado.concat(base.filter(function (c) { return !usadas[c.slug]; }));
+    return resultado.concat(base.filter(function (c) {
+      var clave = claveCategoria(c.slug);
+      return !usadas[clave] && !ocultas[clave];
+    }));
   }
   function productosDeCat(slug) {
     return productos.filter(function (p) { return p.catSlug === slug; });
+  }
+
+  function grupoVenta(p) {
+    var texto = ((p.catNombre || "") + " " + (p.nombre || "")).toLowerCase();
+    if (/bebida|jugo|agua|gaseosa|coca|refresco/.test(texto)) return "bebida";
+    if (/postre|helado|avalancha|dulce|brownie/.test(texto)) return "postre";
+    if (/papa|snack|empanada|nugget|acompañamiento/.test(texto)) return "acompanamiento";
+    return "principal";
+  }
+
+  function sugerenciasUpsell(limite, excluirId) {
+    var excluidos = {};
+    estado.carrito.forEach(function (l) {
+      excluidos[String(l.id)] = true;
+      (l.extras || []).forEach(function (x) { excluidos[String(x.id)] = true; });
+    });
+    if (excluirId != null) excluidos[String(excluirId)] = true;
+
+    var contexto = estado.carrito.map(function (l) { return byId(l.id); }).filter(Boolean);
+    if (estado.prodActual && excluirId != null) contexto.push(estado.prodActual);
+    var gruposPresentes = {};
+    contexto.forEach(function (p) { gruposPresentes[grupoVenta(p)] = true; });
+    var referencia = contexto.length ? contexto.reduce(function (s, p) { return s + p.precio; }, 0) / contexto.length : 0;
+
+    return productos.filter(function (p) {
+      return p.precio > 0 && !excluidos[String(p.id)];
+    }).map(function (p) {
+      var grupo = grupoVenta(p), puntaje = 0;
+      if (grupo === "bebida" && !gruposPresentes.bebida) puntaje += 140;
+      if (grupo === "acompanamiento" && !gruposPresentes.acompanamiento) puntaje += 115;
+      if (grupo === "postre" && !gruposPresentes.postre) puntaje += 100;
+      if (grupo === "principal" && !gruposPresentes.principal) puntaje += 70;
+      if (gruposPresentes[grupo]) puntaje -= 30;
+      if (referencia && p.precio <= referencia * .55) puntaje += 35;
+      if (excluirId != null && estado.prodActual && p.catSlug === estado.prodActual.catSlug) puntaje -= 20;
+      return { producto: p, puntaje: puntaje };
+    }).sort(function (a, b) {
+      return b.puntaje - a.puntaje || a.producto.precio - b.producto.precio;
+    }).slice(0, limite).map(function (x) { return x.producto; });
   }
 
   /* ======================================================================
@@ -274,6 +427,7 @@
     if (nombre === "carrito") renderCarrito();
     if (nombre === "pago") renderPago();
     ilustrarFlujo();
+    if (protector.iniciado) programarInactividad();
   }
 
   /* ======================================================================
@@ -516,7 +670,7 @@
      ====================================================================== */
   function renderExtras() {
     var $g = $("#extras-grid").empty();
-    var lista = CFG.extrasSlugs.map(bySlug).filter(Boolean);
+    var lista = sugerenciasUpsell(4, estado.prodActual && estado.prodActual.id);
     if (!lista.length) { $g.html('<p style="color:var(--gris-txt)">Sin extras disponibles.</p>'); }
     lista.forEach(function (p) {
       var sel = estado.detalle.extras.some(function (x) { return x.id === p.id; });
@@ -662,13 +816,16 @@
       $l.append($it);
     });
 
-    // venta cruzada
+    // Venta cruzada dinámica: prioriza bebida, acompañamiento y postre faltantes.
     var $cg = $("#cross-grid").empty();
-    CFG.crossSlugs.map(bySlug).filter(Boolean).forEach(function (p) {
+    var sugerencias = sugerenciasUpsell(4, null);
+    $("#crosssell").toggle(sugerencias.length > 0);
+    $("#crosssell-titulo").text("Completa tu pedido · Recomendado para ti");
+    sugerencias.forEach(function (p) {
       var $c = $(
         '<div class="cross-card">' +
           '<img alt="" src="' + p.img + '">' +
-          '<div class="cc">' + p.nombre + '<br><span class="pr">' + clp(p.precio) + "</span></div>" +
+          '<div class="cc"><small class="upsell-tag">SUMA MÁS SABOR</small>' + p.nombre + '<br><span class="pr">' + clp(p.precio) + "</span></div>" +
           '<button class="cc-add">+</button>' +
         "</div>"
       );
@@ -828,6 +985,7 @@
     restaurar();
     refrescarTop();
     mostrar("atract");
+    iniciarProtector();
   }
 
 })(jQuery);

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/kiosco.css?v=20260911-clean">
+  <link rel="stylesheet" href="css/kiosco.css?v=20260914-inactividad-1">
   <title>Kiosco de autoatención · Imágenes WS</title>
 </head>
 <body class="inicio-kiosco" data-imagenes="ws" data-categorias-limpias="true">
@@ -149,7 +149,7 @@
           <button class="btn btn-navy" id="seguir-comprando" style="margin-left:auto;">+ Seguir comprando</button>
         </div>
         <div class="crosssell" id="crosssell">
-          <h3>&iquest;Quieres agregar algo m&aacute;s a tu pedido?</h3>
+          <h3 id="crosssell-titulo">Completa tu pedido con algo m&aacute;s</h3>
           <div class="cross-grid" id="cross-grid"></div>
         </div>
         <div class="detalle-compra">
@@ -239,7 +239,46 @@
 
   <div id="toast"></div>
 
+  <aside id="protector-pantalla" aria-hidden="true">
+    <div class="protector-trama" aria-hidden="true"></div>
+    <div class="protector-destello protector-destello-a" aria-hidden="true"></div>
+    <div class="protector-destello protector-destello-b" aria-hidden="true"></div>
+    <header class="protector-encabezado">
+      <p class="protector-eyebrow"><span></span> INGELAN · AUTOSERVICIOS <span></span></p>
+      <h2 id="protector-frase"></h2>
+      <p class="protector-descubre" id="protector-descubre">Descubre todo el sabor que tenemos para ti</p>
+    </header>
+    <div class="protector-contenido">
+      <div class="protector-tarjeta">
+        <span class="protector-recomendado">RECOMENDADO</span>
+        <img class="protector-logo" src="img/logo.png" alt="Ingelan Autoservicios" onerror="this.style.display='none'">
+        <div class="protector-imagen"><img id="protector-producto-img" src="img/imagenNoDisponible.jpg" alt=""></div>
+        <h3 id="protector-producto"></h3>
+        <p class="protector-descripcion" id="protector-descripcion"></p>
+        <div class="protector-precio"><small>DISFRÚTALO POR</small><strong id="protector-precio"></strong></div>
+      </div>
+    </div>
+    <footer class="protector-pie">
+      <div class="protector-cta"><span class="protector-icono" aria-hidden="true">☝</span><strong>TOCA PARA PEDIR AHORA</strong></div>
+      <small>Elige tus favoritos · Para servir o para llevar</small>
+      <i class="protector-progreso" aria-hidden="true"></i>
+    </footer>
+  </aside>
+
+  <div id="aviso-inactividad" aria-hidden="true">
+    <div class="inactividad-panel" role="dialog" aria-modal="true" aria-labelledby="inactividad-titulo" aria-describedby="inactividad-texto">
+      <div class="inactividad-reloj" aria-hidden="true"><span id="inactividad-segundos">20</span></div>
+      <p class="inactividad-etiqueta">TU PEDIDO SIGUE AQUÍ</p>
+      <h2 id="inactividad-titulo">¿Necesitas más tiempo?</h2>
+      <p id="inactividad-texto">Para proteger tu pedido, la sesión se cerrará si no recibimos una respuesta.</p>
+      <div class="inactividad-acciones">
+        <button type="button" class="inactividad-continuar" id="inactividad-continuar">Sí, necesito más tiempo</button>
+        <button type="button" class="inactividad-salir" id="inactividad-salir">No, volver al inicio</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="js/kiosco.js?v=20260911-clean"></script>
+  <script src="js/kiosco.js?v=20260914-inactividad-1"></script>
 </body>
 </html>
