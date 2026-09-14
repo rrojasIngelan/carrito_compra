@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/kiosco.css?v=20260911-local">
+  <title>Kiosco de autoatención · Catálogo local</title>
+</head>
+<body class="inicio-kiosco" data-imagenes="ws" data-categorias-limpias="true" data-catalogo="local">
+  <div id="app">
+
+    <!-- ================= Barra superior ================= -->
+    <div class="topbar">
+      <button class="volver" id="btn-volver" hidden>&#8592; Volver</button>
+      <span class="marca"><img src="img/logo.png" alt="logo" onerror="this.style.display='none'">KIOSCO</span>
+      <button class="cart vacio" id="top-cart">
+        <span class="ico" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h6l5 27h23l5-20H12M20 18v9m8-9v9m8-9v9"/><circle cx="18" cy="41" r="2"/><circle cx="36" cy="41" r="2"/></svg></span>
+        <span class="badge" id="cart-badge">0</span>
+        <span><span id="cart-monto">$0</span><small id="cart-tipo">&nbsp;</small></span>
+      </button>
+    </div>
+
+    <div id="pantallas">
+
+      <!-- ============ 1. Atracción / tipo de orden ============ -->
+      <section class="pantalla activa p-atract" data-p="atract" aria-label="Bienvenido a Ingelan Autoservicios">
+        <div class="portada-kiosco">
+          <img class="portada-imagen" src="img/kiosco-portada.png" width="1088" height="1445"
+               alt="Ingelan Autoservicios. Ordena tu comida aquí. Más rápido, más simple, más para ti. Sin filas, fácil de usar, pago seguro. Paga con tarjeta o efectivo."
+               fetchpriority="high" draggable="false">
+          <button type="button" class="portada-opcion portada-servir" data-orden="Para servir"
+                  aria-label="Para servir. Disfruta aquí."></button>
+          <button type="button" class="portada-opcion portada-llevar" data-orden="Para llevar"
+                  aria-label="Para llevar. Lleva el sabor contigo."></button>
+        </div>
+      </section>
+
+      <!-- ============ 2. Identificación ============ -->
+      <section class="pantalla p-identidad" data-p="identidad" aria-label="Identifícate y recibe beneficios exclusivos">
+        <div class="identidad-lamina">
+          <img class="identidad-imagen" src="img/kiosco-identidad.png" width="1066" height="1476"
+               alt="Ingelan Autoservicios. Identifícate y recibe beneficios exclusivos."
+               draggable="false">
+          <button type="button" class="identidad-zona identidad-zona-app" id="btn-ident"
+                  aria-label="Identifícate con tu app"></button>
+          <button type="button" class="identidad-zona identidad-zona-invitado" id="btn-sin-ben"
+                  aria-label="Continuar sin beneficios"></button>
+        </div>
+      </section>
+
+      <!-- ============ 3. Categorías ============ -->
+      <section class="pantalla p-categorias categorias-ws" data-p="categorias" aria-label="Menú de categorías">
+        <div class="categorias-lamina">
+          <img class="categorias-imagen" src="img/kiosco-categorias.png" width="1076" height="1462" alt="Ingelan Autoservicios. Menú. Categorías. Buena comida, mejores momentos." draggable="false">
+          <button type="button" class="categorias-zona categorias-volver" id="categorias-volver" aria-label="Volver"></button>
+          <button type="button" class="categorias-zona categorias-carrito" id="categorias-carrito" aria-label="Ver carrito"><span id="categorias-badge">0</span></button>
+          <div class="categorias-ws-panel"><div id="cat-grid" class="cat-grid"></div></div>
+        </div>
+      </section>
+
+      <!-- ============ 4. Lista de productos ============ -->
+      <section class="pantalla" data-p="productos">
+        <div class="prod-layout">
+          <div class="cat-rail" id="cat-rail"></div>
+          <div class="prod-list">
+            <h3 class="prod-cat-tit" id="prod-cat-tit">Categor&iacute;a</h3>
+            <div id="prod-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 5. Detalle de producto ============ -->
+      <section class="pantalla" data-p="detalle">
+        <div class="flags"></div>
+        <button class="det-salir" id="det-salir">SALIR &times;</button>
+        <div class="det-precio" id="det-precio">$0</div>
+        <div class="det-top">
+          <img id="det-img" src="img/imagenNoDisponible.jpg" alt="">
+          <div>
+            <h2 id="det-nombre">Producto</h2>
+            <p class="d-desc" id="det-desc">Descripci&oacute;n</p>
+            <div class="stepper">
+              <button id="det-menos">&#8722;</button><span class="v" id="det-cant">1</span><button id="det-mas">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress"><i class="on"></i><i id="prog2"></i><i id="prog3"></i></div>
+
+        <div class="det-sec" id="sec-quitar" hidden>
+          <div class="enc">
+            <span style="font-size:1.3rem;">&#127859;</span>
+            <div>
+              <div class="tt" id="quitar-tt">Quitar ingrediente</div>
+              <div class="hint" id="quitar-hint">Puedes seleccionar hasta 1 opci&oacute;n</div>
+            </div>
+            <span class="pill">Extras</span>
+          </div>
+          <div class="chips" id="chips-quitar"></div>
+        </div>
+
+        <div class="acc-row">
+          <button class="btn btn-linea" id="det-seguir">Seguir comprando</button>
+          <div class="tot"><small>PRECIO</small><span id="det-total">$0</span></div>
+          <button class="btn btn-rojo" id="det-continuar">Continuar</button>
+        </div>
+      </section>
+
+      <!-- ============ 6. Upsell combo ============ -->
+      <section class="pantalla" data-p="combo">
+        <div class="flags"></div>
+        <button class="det-salir" id="combo-salir">SALIR &times;</button>
+        <h2 class="h-tit">Elige tu opci&oacute;n favorita</h2>
+        <div class="combo-opts" id="combo-opts"></div>
+        <button class="no-gracias" id="combo-no">No gracias</button>
+      </section>
+
+      <!-- ============ 7. Agrega a tu orden (extras) ============ -->
+      <section class="pantalla" data-p="extras">
+        <div class="det-sec" style="border-top:none;padding-top:0;">
+          <div class="enc">
+            <span style="font-size:1.3rem;">&#127839;</span>
+            <div>
+              <div class="tt">Agrega a tu orden</div>
+              <div class="hint">Puedes seleccionar hasta 4 opciones</div>
+            </div>
+            <span class="pill">Extras</span>
+          </div>
+          <div class="extras-grid" id="extras-grid"></div>
+        </div>
+        <div class="acc-row">
+          <button class="btn btn-linea" id="extras-seguir">Seguir comprando</button>
+          <div class="tot"><small>TOTAL</small><span id="extras-total">$0</span></div>
+          <button class="btn btn-rojo" id="extras-pagar">Pagar</button>
+        </div>
+      </section>
+
+      <!-- ============ 8/10. Carrito ============ -->
+      <section class="pantalla" data-p="carrito">
+        <div class="cart-head">
+          <h2 class="h-tit" style="margin:0;">Tu carrito</h2>
+          <button class="cupon-btn" id="cupon-btn">% Aplicar cup&oacute;n</button>
+          <div class="tot"><span id="cart-tot-head">$0</span><small id="cart-tipo-head">&nbsp;</small></div>
+        </div>
+        <div id="cart-list"></div>
+        <div class="cart-tools">
+          <button class="btn-txt" id="vaciar-cart">Vaciar carrito</button>
+          <button class="btn btn-navy" id="seguir-comprando" style="margin-left:auto;">+ Seguir comprando</button>
+        </div>
+        <div class="crosssell" id="crosssell">
+          <h3>&iquest;Quieres agregar algo m&aacute;s a tu pedido?</h3>
+          <div class="cross-grid" id="cross-grid"></div>
+        </div>
+        <div class="detalle-compra">
+          <div class="dc-tit" id="dc-tit">DETALLE DE COMPRA <span id="dc-caret">&#9662;</span></div>
+          <div id="dc-body" hidden></div>
+        </div>
+        <div class="acc-row">
+          <button class="btn-txt" id="cancelar-pedido">Cancelar pedido</button>
+          <div class="tot"><small id="cart-tipo-foot">PARA SERVIR</small><span id="cart-tot-foot">$0</span></div>
+          <button class="btn btn-rojo" id="ir-pagar">Pagar</button>
+        </div>
+      </section>
+
+      <section class="pantalla" data-p="sugerido" aria-labelledby="sugerido-nombre">
+        <div class="sugerido-hero"><img id="sugerido-img" src="img/imagenNoDisponible.jpg" alt="Producto sugerido"></div>
+        <h2 id="sugerido-nombre"></h2>
+        <p id="sugerido-desc"></p>
+        <div class="stepper"><button id="sugerido-menos" aria-label="Disminuir cantidad">&#8722;</button><span class="v" id="sugerido-cantidad">1</span><button id="sugerido-mas" aria-label="Aumentar cantidad">+</button></div>
+        <div class="acc-row"><button class="btn btn-navy" id="sugerido-seguir">Seguir comprando</button><button class="btn btn-rojo" id="sugerido-agregar">Agregar</button><div class="tot"><small>TOTAL</small><span id="sugerido-total">$0</span></div></div>
+      </section>
+      <!-- ============ 11. Método de pago ============ -->
+      <section class="pantalla" data-p="pago">
+        <h2 class="h-tit">Orden <span id="pago-tipo" style="color:var(--gris-txt);font-size:1rem;"></span></h2>
+        <div class="cupon-box">
+          <span style="font-size:1.3rem;">&#127903;</span>
+          <span class="tx">&iquest;Tienes un descuento especial?</span>
+          <button class="btn btn-navy" id="btn-codigo" style="padding:11px 16px;font-size:.9rem;">Ingresar c&oacute;digo</button>
+        </div>
+        <h3 style="margin:6px 0 12px;">Escoge el m&eacute;todo de pago</h3>
+        <div id="pay-list"></div>
+      </section>
+
+      <!-- ============ 12. Tipo de tarjeta ============ -->
+      <section class="pantalla" data-p="tipo-tarjeta">
+        <h2 class="h-tit">Seleccione el tipo de tarjeta</h2>
+        <p class="h-sub" id="tt-monto">Total a pagar: $0</p>
+        <button class="tipo-tarjeta" data-tarjeta="D&eacute;bito">Tarjeta de d&eacute;bito</button>
+        <button class="tipo-tarjeta" data-tarjeta="Cr&eacute;dito">Tarjeta de cr&eacute;dito</button>
+      </section>
+
+      <!-- ============ 13. Datáfono ============ -->
+      <section class="pantalla" data-p="datafono">
+        <div class="pago-fin">
+          <div class="circ pulso"><svg viewBox="0 0 200 200" fill="none" aria-label="Terminal de pago sin contacto"><circle cx="100" cy="100" r="98" fill="#e0e5e8"/><rect x="52" y="70" width="65" height="100" rx="12" fill="#22303a"/><rect x="62" y="82" width="45" height="30" rx="4" fill="#91bdce"/><path d="M65 130h8m9 0h8m9 0h5M65 141h8m9 0h8m9 0h5M65 152h8m9 0h8" stroke="#c8d3d9" stroke-width="7"/><path d="M100 25q-27 6-28 31m29-20q-16 3-17 18" stroke="#22303a" stroke-width="5" stroke-linecap="round"/><g transform="rotate(30 132 74)"><rect x="98" y="43" width="70" height="44" rx="6" fill="#d30827"/><rect x="106" y="54" width="13" height="11" rx="2" stroke="white" stroke-width="2"/><path d="M108 75h35" stroke="white" stroke-width="3"/></g></svg></div>
+          <h2>Acerca tu tarjeta y sigue las instrucciones del dat&aacute;fono</h2>
+          <p class="monto" id="datafono-monto">$0</p>
+          <div class="brands" style="justify-content:center;"><span>MASTER</span><span>VISA</span><span>DINERS</span><span>AMEX</span></div>
+        </div>
+      </section>
+
+      <!-- ============ Pago celular (RutPay / MachBank) ============ -->
+      <section class="pantalla" data-p="pago-celular">
+        <div class="pago-fin">
+          <div class="circ" style="font-size:1.8rem;letter-spacing:2px;font-weight:900;">QR</div>
+          <h2 id="celular-tt">Escanea el QR con tu app</h2>
+          <p class="monto" id="celular-monto">$0</p>
+          <button class="btn btn-rojo btn-lg" id="celular-ok" style="margin-top:16px;">Ya pagu&eacute;</button>
+        </div>
+      </section>
+
+      <!-- ============ Efectivo ============ -->
+      <section class="pantalla" data-p="efectivo">
+        <div class="pago-fin">
+          <div class="circ">&#128181;</div>
+          <h2>Ac&eacute;rcate a caja y paga tu pedido</h2>
+          <p class="monto" id="efectivo-monto">$0</p>
+          <button class="btn btn-rojo btn-lg" id="efectivo-ok" style="margin-top:16px;">Confirmar pedido</button>
+        </div>
+      </section>
+
+      <!-- ============ Final ============ -->
+      <section class="pantalla" data-p="final">
+        <div class="final">
+          <div class="check">&#10003;</div>
+          <h2>&iexcl;Pedido confirmado!</h2>
+          <p>Retira tu comprobante impreso.</p>
+          <div class="num" id="num-pedido">#000</div>
+          <p id="final-detalle">1 producto &middot; $0</p>
+          <button class="btn btn-linea btn-lg" id="nuevo-pedido" style="margin-top:18px;">Nuevo pedido</button>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="scanbar">ESCANEA AQU&Iacute;</div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/kiosco.js?v=20260911-local"></script>
+</body>
+</html>

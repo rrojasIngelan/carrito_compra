@@ -1,0 +1,11 @@
+{
+	"parametros": {
+		"url": "https://test1.ingelan.cl/lib/controller/items_ws_tbk.controller.php",
+		"urlCategorias": "https://test1.ingelan.cl/lib/controller/categorias_ws_tbk.controller.php",
+		"urlImg": "https://test1.ingelan.cl/lib/",
+		"cliente": 1,
+		"sucursal": 2,
+		"centro":1,
+		"cod": "*"
+	}
+}

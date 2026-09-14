@@ -1,0 +1,371 @@
+/* Estilos generales */
+body{
+    background-image: url("../img/fondo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+header{
+    height: 120px;
+    margin-top: 30px;
+}
+
+/* Cabecera */
+
+.logo-img{
+    height: 120px;
+}
+
+.carrito-img{
+    height: 120px;
+    cursor: pointer;
+}
+
+#cont-items {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 30px;
+}
+
+#items-carrito {
+    /* font-weight: bold; */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.5rem; /*2vw;*/
+    color: whitesmoke;
+    background-color: #4b4b4d;
+    border-radius: 50px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-left: -20px;
+}
+
+/* Productos */
+#container{
+    margin-top: 40px;
+}
+
+.cont-producto{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    margin-top: 20px;
+    padding: 5px;
+    overflow: hidden;
+    box-shadow: 0px 2px 5px 5px rgba(201,201,201,0.75);
+    -webkit-box-shadow: 0px 2px 5px 5px rgba(201,201,201,0.75);
+    -moz-box-shadow: 0px 2px 5px 5px rgba(201,201,201,0.75);
+}
+
+.producto{
+    width: 90%;
+    text-align: center;
+    border: 5px solid #aa3436;
+    border-radius: 6%;
+    margin-bottom: 10px;
+}
+
+.producto img{
+    object-fit: contain;
+    width: 80%;
+    height: 250px;
+}
+
+.prod-titulo{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: black;
+    min-height: 50px;
+}
+
+.prod-desc{
+    min-height: 80px;
+    font-size: 1.2rem;
+    color: #727272;
+    padding: 5px;
+    text-align: left;
+}
+
+.prod-precio{
+    font-weight: bold;
+    font-size: 2rem;
+    color: #cf080c;
+
+}
+
+.cont-btn{
+    margin: 10px 0px;
+}
+
+.btn-agregar{
+    background-color: #cf080c;
+    color: white;
+    border-style: none;
+    font-size: 1.8rem;
+    border-radius: 20px;
+    padding: 0px 15px 5px 15px;
+    box-shadow: 0px 2px 5px 5px rgba(201,201,201,0.75);
+    -webkit-box-shadow: 0px 2px 5px 5px rgba(201,201,201,0.75);
+    -moz-box-shadow: 0px 2px 5px 5px rgba(201,201,201,0.75);
+}
+
+.cont-cantidad{
+    display: flex;
+    justify-content: center;
+}
+
+.btn-cantidad{
+    border-style: none;
+    width: 40px;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+    background-color: #cf080c;
+}
+
+.div-cantidad{
+    background-color: rgb(235, 235, 235);
+    width: 90px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.btn-left{
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+
+.btn-right{
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+
+.btn-hide{
+    display: none;
+}
+
+
+/* modal carrito */
+.modal-header{
+    background-color: #aa3436;
+    color: white;
+    /* border: 3px solid white; */
+}
+
+#modal{
+    max-width: 600px;
+}
+
+.modal-body{
+    max-height: 60vh;
+    overflow-y: auto;
+}
+.modal-contenedor{
+    display: flex;
+    align-items: center;
+}
+
+.modal-cont-img{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 200px;
+    margin: 15px;
+    border: 1px double #727272;
+    border-radius: 15px;
+    
+    /* text-align: center; */
+}
+
+.img-carrito{
+    object-fit: contain;
+    padding: 4px;
+}
+
+.div-precio{
+    /* background-color: orange; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: #aa3436;
+    font-weight: bold;
+    font-size: 1.5rem;
+
+}
+
+#precioTotal{
+    color: black;
+}
+
+.carrito-vacio{
+    font-size: 1.5rem;
+    font-style: italic;
+}
+
+.btns-carrito{
+    /* background-color: orange; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+/* navegación página */
+#nav-pag{
+    margin-top: 30px;
+}
+
+#nav-pag ul{
+    justify-content: center;
+}
+
+#nav-pag ul li{
+    font-size: 2rem;
+    margin: 0px 10px; 
+    
+}
+
+.nav-prod{
+    color: #aa3436;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all .5s ease;
+}
+
+.nav-prod:hover{
+    color: #aa3436;
+}
+
+/* estilo resumen */
+
+#titulo-resumen{
+    margin-top: 20px;
+    text-align: center;
+    color: #4b4b4d;
+}
+
+
+#img-atras{
+    position: fixed;
+    margin-top: 30vh;
+    height: 100px;
+    opacity: 80%;
+}
+
+#resumen{
+    /* background-color: pink; */
+    max-height: 60vh;
+    overflow-y: scroll;
+    padding-bottom: 20px;
+}
+
+.cont-resumen{
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+}
+
+.producto-resumen{
+    /* background-color: blue; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    width: 200px;
+    margin-right: 10px;
+    padding: 5px;
+    border-right: 1px solid gainsboro;
+}
+
+.producto-resumen img{
+    object-fit: contain;
+    width: 100%;
+    
+    /* height: 100%; */
+}
+.detalle-producto{
+    width: 70%;
+}
+
+.titulo-resumen{
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #4b4b4d;
+}
+
+.desc-resumen{
+    font-size: 1rem;
+    color: #727272;
+    width: 20vw;
+}
+
+.cantidad-resumen{
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.total-producto{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+    align-content: center;
+    
+}
+
+.precio-resumen{
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: #cf080c;
+}
+
+#total{
+    display: flex;
+}
+
+#total span{
+    font-size: 2rem;
+    font-weight: bold;
+    margin-left: 70px;
+    margin-top: 20px;
+    color: #4b4b4d;
+}
+
+#total-resumen{
+    font-size: 2rem;
+    font-weight: bold;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.btn-pagar-cancelar{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.btn-pagar{
+    border-style: none;
+    background-color: #ba0000;
+    color: white;
+    border-radius: 50px;
+    font-size: 2.2rem;
+    width: 40%;
+    padding: 10px 10px;
+    transition: all .5s ease;
+}
+
+.btn-pagar:hover{
+    background-color: #cf080c;
+}
