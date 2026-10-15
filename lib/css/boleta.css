@@ -15,6 +15,7 @@
 #boleta .boleta-total { font-size: 17px; font-weight: bold; margin-top: 6px; }
 #boleta footer { border-top: 1px dashed black; padding-top: 8px; }
 #boleta small { display: block; font-size: 10px; }
+#boleta .boleta-qr { width: 48mm; height: 48mm; max-width: 100%; object-fit: contain; }
 @media print {
     @page { size: auto; margin: 0; }
     html, body { background: white !important; margin: 0 !important; padding: 0 !important; height: auto !important; min-height: 0 !important; overflow: visible !important; }

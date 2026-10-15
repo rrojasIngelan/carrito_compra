@@ -4,6 +4,7 @@
 		"urlCategorias": "https://test1.ingelan.cl/lib/controller/categorias_ws_tbk.controller.php",
 		"urlEmpresasAlianza": "https://test1.ingelan.cl/lib/controller/empresas_alianza_ws_tbk.controller.php",
 		"urlBeneficiosQr": "https://test1.ingelan.cl/lib/controller/beneficios_qr_ws_tbk.controller.php",
+		"urlPedidos": "https://test1.ingelan.cl/lib/controller/pedidos_ws_tbk.controller.php",
 		"urlPublicaKiosco": "",
 		"urlImg": "https://test1.ingelan.cl/lib/",
 		"cliente": 1,

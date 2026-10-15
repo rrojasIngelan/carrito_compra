@@ -17,7 +17,7 @@ Por solicitud del usuario, la consulta y exportación del PMV están abiertas a 
 - Producto base, extras y recargo del combo en líneas separadas, con relación a la línea original del carrito. Incluye ID/código de producto cuando existe, descripción, cantidades e ingredientes quitados.
 - Precio unitario original y con beneficio, subtotal original, descuento de alianza, descuento de cupón y total de cada línea.
 - Empresa de alianza (ID/nombre), porcentaje del cupón y totales generales. No se guarda el token de activación QR.
-- Estado de envío `pendiente`, con cero intentos. Todavía no se ejecuta el POST a un backend externo.
+- Estado inicial de envío `pendiente`, con cero intentos; la cola realiza el POST en segundo plano y actualiza el journal al recibir la confirmación.
 
 La cantidad de unidades cuenta productos y extras; el recargo del combo no agrega unidades ficticias. El cupón se distribuye entre líneas en pesos enteros mediante restos mayores, para que su suma coincida exactamente con el descuento del pedido. Los importes conservan el cálculo vigente del kiosco; no se inventa un desglose tributario que el catálogo no entrega.
 
@@ -35,7 +35,7 @@ El flujo actual sigue siendo un PMV: la selección de tarjeta/RutPay/MachBank te
 
 Los totales por medio permiten comparar los pedidos registrados con la caja y otros sistemas; no equivalen por sí solos a efectivo contado ni a liquidaciones bancarias. Al integrar pagos reales, el backend deberá registrar su confirmación y referencia de transacción. Los pedidos cancelados antes de confirmarse no son ventas y no se agregan a este journal.
 
-## Contrato preparado para el POST futuro
+## Contrato de envío al backend
 
 La exportación tiene `version`, `desde`, `hasta`, `ventas[]`. Cada elemento de `ventas[]` es una venta completa e independiente, con:
 
@@ -60,7 +60,7 @@ La exportación tiene `version`, `desde`, `hasta`, `ventas[]`. Cada elemento de 
 }
 ```
 
-El ejemplo abrevia `detalle` y `totales`; el exportado contiene todos sus campos y las fechas. El backend futuro debe deduplicar por `venta_id`. Falta definir URL, autenticación, respuesta de aceptación y tratamiento de rechazos antes de implementar el envío y marcar una venta como enviada. No se borra el registro por enviarlo.
+El ejemplo abrevia `detalle` y `totales`; el exportado contiene todos sus campos y las fechas. El backend deduplica por `venta_id`. El kiosco envía cada venta completa a `urlPedidos?accion=crear` en segundo plano. No se borra el registro por enviarlo. Ver ENVIO_PEDIDOS.md para la recuperación, reintentos y pruebas.
 
 ## Cómo verificar
 

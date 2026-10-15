@@ -22,13 +22,14 @@ function listarVentas($form) {
 
 try {
     $accion = $_GET['accion'] ?? '';
-    if ($accion === 'registrar' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (in_array($accion,array('registrar','envio'),true) && $_SERVER['REQUEST_METHOD'] === 'POST') {
         if (stripos($_SERVER['CONTENT_TYPE'] ?? '','application/json') !== 0 || ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') === 'cross-site') throw new InvalidArgumentException('Solicitud inválida');
         $contenido = file_get_contents('php://input',false,null,0,1048577);
         if (strlen($contenido) > 1048576) throw new InvalidArgumentException('Venta demasiado extensa');
         $form = json_decode($contenido,true,64,JSON_THROW_ON_ERROR);
-        $result = registrarVenta($form);
+        $result = $accion === 'registrar' ? registrarVenta($form) : (new ventasDAO())->guardarEnvio($form);
     } elseif ($accion === 'listar' && $_SERVER['REQUEST_METHOD'] === 'GET') $result = listarVentas($_GET);
+    elseif ($accion === 'pendientes' && $_SERVER['REQUEST_METHOD'] === 'GET') $result = (new ventasDAO())->listarPendientes();
     else {
         http_response_code(405);
         $result = array('error'=>'Acción o método no permitido');

@@ -13,6 +13,9 @@ class ventasDAO {
             medio TEXT NOT NULL, total INTEGER NOT NULL, descuento INTEGER NOT NULL,
             huella TEXT NOT NULL, datos TEXT NOT NULL)');
         $this->cnx->exec('CREATE INDEX IF NOT EXISTS ventas_fecha ON ventas(fecha)');
+        $this->cnx->exec("CREATE TABLE IF NOT EXISTS ventas_envio (
+            venta_id TEXT PRIMARY KEY, estado TEXT NOT NULL, intentos INTEGER NOT NULL,
+            proximo INTEGER NOT NULL, pedido TEXT)");
     }
 
     public function registrarVenta($venta) {
@@ -39,7 +42,48 @@ class ventasDAO {
         $venta['fecha'] = $fila['fecha'];
         $venta['fecha_hora'] = $fila['fecha_hora'];
         $venta['zona_horaria'] = 'America/Santiago';
+        $consulta = $this->cnx->prepare('SELECT * FROM ventas_envio WHERE venta_id=:id');
+        $consulta->execute(array(':id'=>$venta['venta_id']));
+        if ($envio = $consulta->fetch(PDO::FETCH_ASSOC)) {
+            $venta['envio'] = array('estado'=>$envio['estado'],'intentos'=>(int)$envio['intentos']);
+            if ($envio['pedido']) $venta['envio']['pedido'] = json_decode($envio['pedido'],true,64,JSON_THROW_ON_ERROR);
+        }
         return $venta;
+    }
+
+    public function listarPendientes() {
+        $q = $this->cnx->prepare("SELECT v.* FROM ventas v LEFT JOIN ventas_envio e ON e.venta_id=v.venta_id
+            WHERE COALESCE(e.estado,'pendiente')='pendiente' AND COALESCE(e.proximo,0)<=:ahora ORDER BY v.id LIMIT 20");
+        $q->bindValue(':ahora',(int)floor(microtime(true)*1000),PDO::PARAM_INT);
+        $q->execute();
+        $list = array();
+        foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $fila) $list[] = $this->describirVenta($fila);
+        return array('list'=>$list);
+    }
+
+    public function guardarEnvio($form) {
+        if (!is_array($form) || !is_string($form['venta_id'] ?? null) ||
+            !in_array($form['estado'] ?? '',array('enviado','pendiente'),true)) throw new InvalidArgumentException('Envío inválido');
+        $intentos = $form['intentos'] ?? null;
+        if (!is_int($intentos) || $intentos<0 || $intentos>100000000) throw new InvalidArgumentException('Intentos inválidos');
+        $pedido = null;
+        if ($form['estado']==='enviado') {
+            $pedido = $form['pedido'] ?? null;
+            if (!is_array($pedido) || filter_var($pedido['id_pedido'] ?? null,FILTER_VALIDATE_INT,
+                array('options'=>array('min_range'=>1)))===false || filter_var($pedido['numero_pedido'] ?? null,
+                FILTER_VALIDATE_INT,array('options'=>array('min_range'=>1)))===false) throw new InvalidArgumentException('Respuesta de pedido inválida');
+        }
+        $esperas = array(2000,5000,15000,30000,60000);
+        $proximo = (int)floor(microtime(true)*1000) + $esperas[min(max(0,$intentos-1),4)];
+        // Nunca degradar un envío confirmado por una respuesta tardía de otra pantalla.
+        $q = $this->cnx->prepare("INSERT INTO ventas_envio(venta_id,estado,intentos,proximo,pedido)
+            SELECT venta_id,:estado,:intentos,:proximo,:pedido FROM ventas WHERE venta_id=:id
+            ON CONFLICT(venta_id) DO UPDATE SET estado=excluded.estado,
+            intentos=MAX(ventas_envio.intentos,excluded.intentos),proximo=excluded.proximo,pedido=excluded.pedido
+            WHERE ventas_envio.estado<>'enviado'");
+        $q->execute(array(':id'=>$form['venta_id'],':estado'=>$form['estado'],':intentos'=>$intentos,
+            ':proximo'=>$proximo,':pedido'=>$pedido ? json_encode($pedido,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR) : null));
+        return array('estado'=>1);
     }
 
     public function listarVentas($desde, $hasta, $limite = 1000, $offset = 0) {

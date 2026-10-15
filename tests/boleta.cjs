@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
-const contexto = vm.createContext({});
+const contexto = vm.createContext({URL});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'../lib/js/boleta.js'),'utf8'),contexto);
 const venta = {
     numero_pedido: 66, venta_id: 'venta-test', fecha_hora:'2026-10-15T12:30:00-03:00',
@@ -27,6 +27,14 @@ for (const [total,neto,iva] of [[11900,'10.000','1.900'],[0,'0','0'],[1,'1','0']
 }
 venta.pago={medio:'efectivo',estado:'pendiente_caja'};
 assert.ok(contexto.generarBoletaHtml(venta).includes('PENDIENTE DE PAGO EN CAJA'));
+assert.ok(!contexto.generarBoletaHtml(venta).includes('boleta-qr'),'omite QR mientras no hay confirmación');
+venta.envio={estado:'enviado',pedido:{numero_pedido:99,url_qr:'https://test1.ingelan.cl/qr.png?cliente=1&token=test'}};
+const enviada=contexto.generarBoletaHtml(venta);
+assert.ok(enviada.includes('ORDEN: 99'));
+assert.ok(enviada.includes('class="boleta-qr"'));
+assert.ok(enviada.includes('&amp;token=test'));
+venta.envio.pedido.url_qr='javascript:alert(1)';
+assert.ok(!contexto.generarBoletaHtml(venta).includes('boleta-qr'),'rechaza QR de origen inseguro');
 for (const nombre of ['kiosco','kiosco-ws','kiosco-sin-ws']) {
     const vista=fs.readFileSync(path.join(__dirname,'../lib/view/'+nombre+'.view.html'),'utf8');
     assert.equal((vista.match(/id="boleta"/g)||[]).length,1);

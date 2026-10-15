@@ -8,7 +8,7 @@ if (!isset($_SESSION['inicio_kiosco_ws'])) {
 }
 
 // Rutas internas permitidas. La solicitud nunca determina una ruta de archivo.
-$vistas = array('carrito', 'resumen', 'kiosco', 'kiosco-ws', 'kiosco-sin-ws', 'ventas');
+$vistas = array('carrito', 'resumen', 'kiosco', 'kiosco-ws', 'kiosco-sin-ws', 'ventas', 'cocina', 'pedidos');
 $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/') . '/';
 if (isset($_GET['lectura_qr'])) {
     $tokenLectura = $_GET['lectura_qr'];
