@@ -97,8 +97,10 @@ Al confirmar una venta guardada en SQLite, el kiosco genera un ticket desde la m
 Verificación manual:
 1. Recargar el kiosco con Ctrl+F5, agregar un combo y un extra, cambiar cantidades y completar el pago.
 2. En la confirmación, revisar el ticket y comparar sus líneas y total con el registro de ventas.
-3. Pulsar «Imprimir boleta». Seleccionar impresora y papel térmico de 80 mm, escala 100 %, sin encabezados/pies del navegador; también se puede guardar como PDF.
-4. Cancelar el diálogo y volver a imprimir: no debe crearse otra venta. «Nuevo pedido» limpia el ticket anterior.
+3. Al confirmar la venta se llama automáticamente a window.print(), sin botón manual. Para imprimir sin diálogo, ejecutar Chrome con --kiosk --kiosk-printing y configurar la impresora predeterminada con papel térmico de 80 mm.
+4. Verificar que solo imprime después de guardar la venta y no duplica la impresión ante doble confirmación. «Nuevo pedido» limpia el ticket anterior.
 5. Probar una venta con alianza/cupón y otra en efectivo: deben verse los descuentos y el estado pendiente de pago en caja, respectivamente.
 
 Ejecutado: node tests/boleta.cjs, node tests/extras-carrito.cjs, node tests/qr-pantalla.cjs, node tests/sales-journal.cjs, node tests/beneficios-qr.cjs y node --check lib/js/kiosco.js. No se ha probado una impresora física ni el diálogo de impresión.
+
+Impresión automática: node tests/qr-pantalla.cjs verifica cero impresiones al fallar el registro, una al guardarse y ninguna adicional al repetir la finalización con el carrito vacío. Sin prueba de impresora física.

@@ -6,6 +6,7 @@ const path = require('node:path');
 const elementos = new Map(), timers = new Map(), peticiones = [], almacenamiento = new Map();
 let secuencia = 0, respuestaCrear, respuestaEstado, fallaRegistro=false;
 const registros=[];
+let impresiones=0;
 function elemento(selector) {
     if (!elementos.has(selector)) elementos.set(selector, {atributos:{}, propiedades:{}, texto:'', eventos:{}});
     const dato = elementos.get(selector), api = {0:{}};
@@ -28,7 +29,7 @@ elemento('body').attr('data-imagenes','ws');
 elemento.extend = (destino, origen) => Object.assign(destino, origen);
 const guardar = {getItem:clave=>almacenamiento.get(clave)||null,setItem:(clave,valor)=>almacenamiento.set(clave,valor),removeItem:clave=>almacenamiento.delete(clave)};
 const ctx = vm.createContext({URL,AbortController,crypto:require('node:crypto').webcrypto,console:{error(){}},document:{baseURI:'http://localhost/carro_compras/'},
-    window:{scrollTo(){}},localStorage:guardar,sessionStorage:guardar,
+    window:{scrollTo(){},print(){impresiones++;}},localStorage:guardar,sessionStorage:guardar,
     jQuery:elemento,$:elemento,QRCode:Object.assign(function(){},{CorrectLevel:{M:0}}),
     setTimeout:(callback,ms)=>{const id=++secuencia;timers.set(id,{callback,ms});return id;},
     clearTimeout:id=>timers.delete(id),clearInterval() {},
@@ -44,6 +45,7 @@ vm.runInContext(fs.readFileSync(path.join(__dirname,'../lib/js/utilidades.js'),'
     .replace('function consultarCatalogo(', 'function catalogoNoUtilizado('),ctx);
 vm.runInContext(fs.readFileSync(path.join(__dirname,'../lib/js/ventas.js'),'utf8')
     .replace('function registrarVenta(', 'function registroNoUtilizado('),ctx);
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../lib/js/boleta.js'),'utf8'),ctx);
 let codigo = fs.readFileSync(path.join(__dirname,'../lib/js/kiosco.js'),'utf8');
 const cierre = codigo.lastIndexOf('});');
 codigo = codigo.slice(0,cierre) + `
@@ -136,6 +138,7 @@ const drenar=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
     ctx.qrPrueba.finalizar();
     await primerIntento;
     assert.equal(registros.length,1,'doble clic no inicia otro registro');
+    assert.equal(impresiones,0,'no imprime una venta que no se guardó');
     assert.notEqual(ctx.qrPrueba.beneficios(),null,'no limpiar si falla el registro');
     assert.equal(ctx.qrPrueba.lineas().length,1,'mantener carrito ante fallo');
     ctx.qrPrueba.reiniciar();
@@ -143,6 +146,9 @@ const drenar=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
     fallaRegistro=false;
     await ctx.qrPrueba.finalizar();
     assert.equal(registros[0],registros[1],'reintentar reutiliza el ID de venta');
+    assert.equal(impresiones,1,'imprime automáticamente después de confirmar la venta');
+    await ctx.qrPrueba.finalizar();
+    assert.equal(impresiones,1,'no vuelve a imprimir al finalizar el carrito vacío');
     assert.equal(ctx.qrPrueba.beneficios(),null,'finalizar limpia la alianza');
     assert.equal(almacenamiento.has('kiosco_carrito_ws_alianza'),false);
     ctx.qrPrueba.reiniciar();

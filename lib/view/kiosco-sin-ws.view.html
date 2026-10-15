@@ -254,10 +254,9 @@
         <div class="final">
           <div class="check">&#10003;</div>
           <h2>&iexcl;Pedido confirmado!</h2>
-          <p>Imprime tu comprobante para retirar el pedido.</p>
+          <p>Retira tu comprobante impreso.</p>
           <div class="num" id="num-pedido">#000</div>
           <p id="final-detalle">1 producto &middot; $0</p>
-          <button type="button" class="btn btn-rojo btn-lg" id="imprimir-boleta" disabled>Imprimir boleta</button>
           <button class="btn btn-linea btn-lg" id="nuevo-pedido" style="margin-top:18px;">Nuevo pedido</button>
         </div>
       </section>
@@ -274,7 +273,7 @@
   <script src="lib/js/qrcode/qrcode.js"></script>
   <script src="lib/js/ventas.js?v=20261015-extras-independientes"></script>
   <script src="lib/js/boleta.js?v=20261015-boleta"></script>
-  <script src="lib/js/kiosco.js?v=20261015-boleta"></script>
+  <script src="lib/js/kiosco.js?v=20261015-impresion-automatica"></script>
   <div id="registro-venta" class="registro-venta" role="dialog" aria-modal="true" aria-label="Confirmación del pedido" hidden>
     <div><p id="registro-venta-mensaje" role="status" aria-live="polite"></p>
     <button type="button" id="registro-venta-reintentar" hidden>Reintentar</button></div>

@@ -23,7 +23,7 @@ assert.ok(contexto.generarBoletaHtml(venta).includes('PENDIENTE DE PAGO EN CAJA'
 for (const nombre of ['kiosco','kiosco-ws','kiosco-sin-ws']) {
     const vista=fs.readFileSync(path.join(__dirname,'../lib/view/'+nombre+'.view.html'),'utf8');
     assert.equal((vista.match(/id="boleta"/g)||[]).length,1);
-    assert.ok(vista.includes('id="imprimir-boleta"'));
+    assert.ok(!vista.includes('id="imprimir-boleta"'),'sin botón de impresión manual');
     assert.ok(vista.indexOf('lib/js/boleta.js') < vista.indexOf('lib/js/kiosco.js'));
 }
 console.log('OK: comprobante, cantidades, precios, descuentos, escape HTML y tres entradas del kiosco.');
