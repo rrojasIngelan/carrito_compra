@@ -71,3 +71,9 @@ Al ingresar a Extras se guarda inmediatamente el producto y su combo, sin exigir
 - HTTP local: vista del journal 200; listado 200; descarga del SQLite 403; fecha inválida 400; GET para registrar 405; venta vacía por POST 400.
 - Navegador: reporte abre en la raíz, filtros por fecha, tabla vacía y resumen de cero pedidos visibles. No se insertó una venta operativa de prueba ni se verificó una exportación descargada desde la UI.
 - `.gitignore` verificado: excluye sales-journal.sqlite. No se realizaron commit, push ni envío de ventas al backend externo.
+
+## Recuperación del error 502 al cargar catálogo
+
+Durante la revisión, el controlador local y el servicio remoto respondieron HTTP 200; la causa original de la captura no pudo confirmarse. Se añadió un reintento acotado para fallos transitorios de GET (502/503/504 y conexiones/timeouts), con presupuesto de 25 segundos y validación HTTPS intacta. Los fallos definitivos incluyen en el registro del servidor la clave del servicio, HTTP y error cURL; no se muestran datos internos al cliente. La pantalla de error ofrece Reintentar mediante recarga, sin sustituir precios por un catálogo antiguo.
+
+Prueba de fallos controlados `php tests/catalogo-reintento.php`: aprobada, cubriendo recuperación ante 502/timeout, límite de dos intentos, error de certificado, 403 y JSON inválido. Sintaxis y suites Node anteriores: aprobadas. Verificación HTTP final: 200, 40 productos. No se reprodujo el fallo original ni se realizó otra prueba visual.
