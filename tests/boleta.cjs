@@ -18,6 +18,13 @@ for (const texto of ['ORDEN: 66','Ingelan Autoservicios SpA','Arturo Claro 1465,
     'Descuento alianza','Descuento cupón','PAGO SIMULADO','2026','12:30']) assert.ok(html.includes(texto),texto);
 assert.ok(!html.includes('<especial>'),'escapa nombres antes de insertarlos en HTML');
 assert.equal(JSON.stringify(venta),antes,'no modifica la venta registrada');
+assert.ok(html.includes('<dt>Total neto</dt><dd>$5.950</dd>'));
+assert.ok(html.includes('<dt>IVA 19 %</dt><dd>$1.130</dd>'),'IVA sobre el total con descuentos');
+for (const [total,neto,iva] of [[11900,'10.000','1.900'],[0,'0','0'],[1,'1','0']]) {
+    const comprobante=contexto.generarBoletaHtml({...venta,totales:{...venta.totales,total}});
+    assert.ok(comprobante.includes('<dt>Total neto</dt><dd>$'+neto+'</dd>'));
+    assert.ok(comprobante.includes('<dt>IVA 19 %</dt><dd>$'+iva+'</dd>'));
+}
 venta.pago={medio:'efectivo',estado:'pendiente_caja'};
 assert.ok(contexto.generarBoletaHtml(venta).includes('PENDIENTE DE PAGO EN CAJA'));
 for (const nombre of ['kiosco','kiosco-ws','kiosco-sin-ws']) {
