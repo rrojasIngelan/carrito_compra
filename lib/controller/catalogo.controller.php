@@ -53,6 +53,13 @@ try {
     echo json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 } catch (Throwable $e) {
     error_log('Catálogo: ' . $e->getMessage());
+    // XAMPP puede tener error_log apuntando a una carpeta inexistente.
+    // Esta carpeta ya está bloqueada por Apache y sus logs no se publican en Git.
+    error_log(date('c') . ' Catálogo: ' . $e->getMessage() . PHP_EOL, 3, __DIR__ . '/../db/catalogo-error.log');
     http_response_code(502);
-    echo json_encode(array('error' => 'No se pudo cargar el catálogo'));
+    $error = array('error' => 'No se pudo cargar el catálogo');
+    if (in_array($_SERVER['REMOTE_ADDR'] ?? '', array('127.0.0.1','::1'), true)) {
+        $error['diagnostico_local'] = $e->getMessage();
+    }
+    echo json_encode($error);
 }

@@ -1,2 +1,3 @@
 lib/db/*.sqlite
 lib/db/*.sqlite-*
+lib/db/*.log
