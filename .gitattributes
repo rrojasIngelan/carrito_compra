@@ -1,0 +1,2 @@
+# Mantener los bytes del paquete CA para conservar su SHA256 oficial.
+lib/configApp/certs/cacert.pem -text

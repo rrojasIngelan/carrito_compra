@@ -1,5 +1,7 @@
 # Carro de compras
 
+Para las consultas HTTPS del catálogo se utiliza el paquete CA público incluido en `lib/configApp/certs/cacert.pem`, con validación de certificado y hostname activa. Esto evita depender de un archivo CA antiguo o incompleto de XAMPP. Su origen, SHA256 y licencia están en esa misma carpeta. Para diagnosticar otra instalación, abrir `http://localhost/carro_compras/tests/diagnostico-catalogo.php`. Si el error cURL 60 persiste con el paquete actualizado y existe inspección HTTPS corporativa, solicitar a TI la cadena raíz aprobada; no desactivar la verificación TLS.
+
 El kiosco registra las próximas confirmaciones en un **sales journal local**. Consulta en `http://localhost/carro_compras/?vista=ventas`. Detalle del almacenamiento, medios de pago, reintentos, exportación y contrato del POST futuro en [SALES_JOURNAL.md](SALES_JOURNAL.md).
 
 Aplicación PHP y JavaScript para XAMPP. No requiere instalar paquetes en el servidor. El generador QR se incluye como archivo JavaScript local. El catálogo remoto utiliza la extensión cURL de PHP con verificación TLS activa.

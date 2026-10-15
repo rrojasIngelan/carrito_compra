@@ -18,6 +18,7 @@ function curl_close($cnx) {}
 $fuente=file_get_contents(__DIR__.'/../lib/dao/catalogo.DAO.php');
 eval('namespace PruebaCatalogo; use RuntimeException;'.substr($fuente,5));
 class CatalogoPrueba extends catalogoDAO {
+    public function archivoCertificadosCA() { return __DIR__ . '/../lib/configApp/certs/cacert.pem'; }
     public function listarConfiguracion() {
         return array('parametros'=>array('url'=>'https://example.com/items','cliente'=>1,'sucursal'=>2,'cod'=>'*'));
     }
@@ -37,6 +38,7 @@ $correcta=array('estado'=>200,'contenido'=>'{"list":[]}', 'error'=>0);
 ejecutar(array(array('estado'=>502,'contenido'=>'Error temporal','error'=>0),$correcta));
 verificar($llamadas===2,'Reintentar 502');
 verificar($opciones[CURLOPT_SSL_VERIFYPEER]===true && $opciones[CURLOPT_SSL_VERIFYHOST]===2,'Conservar validación TLS');
+verificar(is_readable($opciones[CURLOPT_CAINFO]),'Usar paquete CA del proyecto');
 ejecutar(array(array('estado'=>0,'contenido'=>false,'error'=>28),$correcta));
 verificar($llamadas===2,'Reintentar timeout');
 ejecutar(array(array('estado'=>0,'contenido'=>false,'error'=>60)),'cURL 60');

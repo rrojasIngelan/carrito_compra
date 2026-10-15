@@ -12,6 +12,9 @@ echo 'cURL disponible: ', function_exists('curl_init') ? 'sí' : 'no', PHP_EOL;
 $ca = ini_get('curl.cainfo');
 echo 'curl.cainfo: ', $ca ?: '(almacén predeterminado)', PHP_EOL;
 if ($ca) echo 'Archivo CA legible: ', is_readable($ca) ? 'sí' : 'no', PHP_EOL;
+$dao = new catalogoDAO();
+echo 'CA utilizado por el proyecto: ', $dao->archivoCertificadosCA(), PHP_EOL;
+echo 'CA del proyecto legible: ', is_readable($dao->archivoCertificadosCA()) ? 'sí' : 'no', PHP_EOL;
 foreach (array('listarProductos','listarCategorias') as $metodo) {
     try {
         $dao = new catalogoDAO();

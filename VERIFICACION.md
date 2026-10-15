@@ -77,3 +77,9 @@ Al ingresar a Extras se guarda inmediatamente el producto y su combo, sin exigir
 Durante la revisión, el controlador local y el servicio remoto respondieron HTTP 200; la causa original de la captura no pudo confirmarse. Se añadió un reintento acotado para fallos transitorios de GET (502/503/504 y conexiones/timeouts), con presupuesto de 25 segundos y validación HTTPS intacta. Los fallos definitivos incluyen en el registro del servidor la clave del servicio, HTTP y error cURL; no se muestran datos internos al cliente. La pantalla de error ofrece Reintentar mediante recarga, sin sustituir precios por un catálogo antiguo.
 
 Prueba de fallos controlados `php tests/catalogo-reintento.php`: aprobada, cubriendo recuperación ante 502/timeout, límite de dos intentos, error de certificado, 403 y JSON inválido. Sintaxis y suites Node anteriores: aprobadas. Verificación HTTP final: 200, 40 productos. No se reprodujo el fallo original ni se realizó otra prueba visual.
+
+## cURL 60 en otra instalación XAMPP
+
+El diagnóstico enviado por el usuario confirmó HTTP 0 / cURL 60 (unable to get local issuer certificate), aunque el CA de php.ini existía y era legible. Se incorporó el paquete CA público de Mozilla distribuido por curl.se, verificado contra su SHA256 oficial. El DAO utiliza CURLOPT_CAINFO con la ruta relativa del proyecto, manteniendo CURLOPT_SSL_VERIFYPEER=true y CURLOPT_SSL_VERIFYHOST=2. El diagnóstico muestra ahora ese archivo efectivo.
+
+Comprobado en este equipo con el nuevo paquete: productos 40 y categorías 12, sin desactivar TLS. Pruebas de reintentos, CA configurado y rechazo de error de certificado aprobadas; suites Node y journal aprobadas. El test PHP de CA requirió ejecución fuera del entorno restringido del agente porque éste impide leer archivos .pem. Falta verificar en el equipo del usuario: una raíz privada de proxy/antivirus no está incluida automáticamente en el conjunto público de Mozilla.

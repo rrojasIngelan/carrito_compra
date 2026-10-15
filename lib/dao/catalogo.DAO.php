@@ -2,6 +2,10 @@
 
 class catalogoDAO {
 
+    public function archivoCertificadosCA() {
+        return __DIR__ . '/../configApp/certs/cacert.pem';
+    }
+
     public function listarConfiguracion() {
         return $this->leerArchivo('data.json');
     }
@@ -45,6 +49,8 @@ class catalogoDAO {
         );
         if ($servicio !== 'urlEmpresasAlianza') $filtros['cod'] = $parametros['cod'];
         $consulta = http_build_query($filtros);
+        $certificadosCA = $this->archivoCertificadosCA();
+        if (!is_readable($certificadosCA)) throw new RuntimeException('No se encuentra el paquete CA del proyecto; actualiza el repositorio completo');
         $cnx = curl_init($url . (strpos($url, '?') === false ? '?' : '&') . $consulta);
         curl_setopt_array($cnx, array(
             CURLOPT_RETURNTRANSFER => true,
@@ -53,6 +59,7 @@ class catalogoDAO {
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_CAINFO => $certificadosCA,
             CURLOPT_HTTPHEADER => array('Accept: application/json')
         ));
         $inicio = microtime(true);
