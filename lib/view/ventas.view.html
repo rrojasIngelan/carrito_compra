@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><base href="../../">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sales journal · Registro de ventas</title>
+  <link rel="stylesheet" href="lib/css/ventas.css?v=20261015-journal">
+</head>
+<body>
+  <main>
+    <header><div><h1>Registro de ventas</h1><p>Sales journal local · importes en pesos chilenos</p></div><button id="volver-kiosco">Volver al kiosco</button></header>
+    <p class="nota">PMV: los pagos electrónicos están simulados y el efectivo queda pendiente de caja. Estos importes corresponden a pedidos registrados; no acreditan cobros efectivos.</p>
+    <form id="filtros"><label>Desde <input type="date" id="desde" required></label><label>Hasta <input type="date" id="hasta" required></label><button>Consultar</button><button type="button" id="exportar">Exportar JSON</button></form>
+    <p id="estado" role="status" aria-live="polite"></p>
+    <section aria-labelledby="resumen-titulo"><h2 id="resumen-titulo">Totales por medio seleccionado</h2><div id="resumen" class="resumen"></div></section>
+    <div class="tabla"><table><thead><tr><th>Pedido</th><th>Fecha y hora</th><th>Medio / estado de pago</th><th>Descuentos</th><th>Total</th><th>Envío al backend</th><th>Detalle</th></tr></thead><tbody id="ventas"></tbody></table></div>
+    <nav><button id="anterior">Anterior</button><span id="pagina"></span><button id="siguiente">Siguiente</button></nav>
+    <section id="detalle" hidden><h2>Detalle de venta</h2><pre id="detalle-json"></pre></section>
+  </main>
+  <script src="lib/js/utilidades.js?v=20261015-journal"></script>
+  <script src="lib/js/ventas-journal.js?v=20261015-journal"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <base href="../../">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <link rel="stylesheet" href="lib/css/kiosco.css?v=20261015-lectura">
+  <title>Activación de beneficios</title>
+</head>
+<body class="vista-alianzas">
+  <main class="alianzas-panel">
+    <img class="alianzas-logo" src="lib/img/logo.png" alt="Ingelan autoservicios">
+    <h1>Activa tus beneficios</h1>
+    <p id="lectura-estado" role="status" data-token="TOKEN_LECTURA">Confirmando lectura del QR…</p>
+    <p class="alianza-qr-demo">Demostración del PMV. Esta lectura no verifica tu identidad bancaria.</p>
+    <button type="button" id="lectura-reintentar" class="alianzas-continuar" hidden>Reintentar</button>
+  </main>
+  <script src="lib/js/lectura-qr.js?v=20261015-lectura"></script>
+</body>
+</html>

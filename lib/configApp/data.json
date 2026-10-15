@@ -2,6 +2,9 @@
 	"parametros": {
 		"url": "https://test1.ingelan.cl/lib/controller/items_ws_tbk.controller.php",
 		"urlCategorias": "https://test1.ingelan.cl/lib/controller/categorias_ws_tbk.controller.php",
+		"urlEmpresasAlianza": "https://test1.ingelan.cl/lib/controller/empresas_alianza_ws_tbk.controller.php",
+		"urlBeneficiosQr": "https://test1.ingelan.cl/lib/controller/beneficios_qr_ws_tbk.controller.php",
+		"urlPublicaKiosco": "",
 		"urlImg": "https://test1.ingelan.cl/lib/",
 		"cliente": 1,
 		"sucursal": 2,

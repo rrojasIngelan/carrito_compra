@@ -1,0 +1,12 @@
+Options -Indexes
+DirectoryIndex index.php index.html
+RewriteEngine On
+# Todas las pantallas pasan por la entrada; la vista activa queda en sesión.
+RewriteRule ^index\.html$ index.php?vista=kiosco-ws [L,QSA]
+RewriteRule ^resumen\.html$ index.php?vista=resumen [L,QSA]
+RewriteRule ^(kiosco|kiosco-ws|kiosco-sin-ws)\.html$ index.php?vista=$1 [L,QSA]
+RewriteRule ^lib/view/(carrito|resumen|kiosco|kiosco-ws|kiosco-sin-ws)\.view\.html$ index.php?vista=$1 [L,QSA]
+# Compatibilidad con enlaces a recursos anteriores a la reorganización.
+RewriteRule ^js/js\.js$ lib/js/carrito.js [L]
+RewriteRule ^(js|css|img)/(.*)$ lib/$1/$2 [L]
+RewriteRule ^config/(.*)$ lib/configApp/$1 [L]

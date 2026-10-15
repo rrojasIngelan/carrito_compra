@@ -502,6 +502,51 @@ body.vista-identidad{background:#870b16;}
 .identidad-zona:hover{background:rgba(170,0,20,.06);}
 .identidad-zona:active{background:rgba(170,0,20,.14);}
 .identidad-zona:focus-visible{outline:4px solid #b40820;outline-offset:-4px;background:rgba(255,255,255,.15);}
+
+/* Selección de empresas con beneficios, antes de identificar al cliente. */
+body.vista-alianzas{background:#fff;}
+.vista-alianzas #app{background:#fff;min-height:100vh;min-height:100dvh;height:auto;}
+.vista-alianzas .topbar,.vista-alianzas .scanbar{display:none;}
+.vista-alianzas #pantallas{overflow:visible;}
+.p-alianzas.activa{display:block;padding:0;}
+.alianzas-panel{max-width:728px;margin:0 auto;padding:12px 42px 44px;text-align:center;color:#192b3b;}
+.alianzas-logo{display:block;width:290px;max-width:65%;height:170px;object-fit:contain;margin:0 auto 36px;}
+.alianzas-panel h1{font-size:clamp(26px,4.5vw,40px);line-height:1.15;color:#c60025;margin:0 0 28px;font-weight:700;}
+.alianzas-subtitulo{font-size:17px;margin:0 0 28px;}
+.alianzas-lista{display:grid;gap:16px;}
+.alianza-empresa{display:flex;align-items:center;gap:22px;width:100%;min-height:116px;padding:16px 22px;border:2px solid #e3e3e3;border-radius:20px;background:#fff;color:#192b3b;text-align:left;cursor:pointer;}
+.alianza-empresa:hover,.alianza-empresa[aria-pressed="true"]{border-color:#c60025;background:#fff8fa;}
+.alianza-empresa:focus-visible,.alianzas-panel button:focus-visible{outline:3px solid #c60025;outline-offset:4px;}
+.alianza-empresa img{width:140px;height:78px;object-fit:contain;flex-shrink:0;}
+.alianza-detalle{display:grid;gap:7px;}
+.alianza-detalle strong{font-size:30px;line-height:1.15;}
+.alianza-detalle>span{font-size:16px;line-height:1.4;}
+.alianzas-estado{font-size:16px;line-height:1.5;margin:18px 0;}
+.alianzas-estado:empty{margin:0;}
+.alianzas-continuar{display:block;width:100%;margin:28px 0 24px;padding:19px 12px;background:#c60025;color:#fff;border:0;border-radius:16px;font-size:21px;font-weight:700;cursor:pointer;}
+.alianzas-volver,.alianzas-reintentar{border:0;background:transparent;color:#c60025;font-size:23px;font-weight:700;padding:12px;cursor:pointer;}
+.alianzas-panel button[hidden]{display:none;}
+.p-alianza-qr.activa{display:block;padding:0;}
+.alianza-qr-empresa{font-size:28px;font-weight:700;margin:0 0 18px;}
+.alianza-qr-empresa img{display:block;width:180px;height:90px;max-width:100%;object-fit:contain;margin:0 auto;}
+.alianza-qr-codigo{box-sizing:content-box;width:256px;height:256px;padding:24px;margin:24px auto;background:#fff;border:1px solid #eee;border-radius:12px;}
+.alianza-qr-codigo canvas,.alianza-qr-codigo img{width:256px;height:256px;max-width:none;}
+.alianza-qr-demo{color:#727272;font-size:15px;line-height:1.5;max-width:480px;margin:20px auto;}
+.beneficio-activo{margin:0;padding:10px 20px;background:#e4f5e9;color:#176532;text-align:center;font-size:18px;font-weight:700;}
+.producto-beneficio{display:block;color:#727272;font-size:14px;text-decoration:line-through;}
+.registro-venta{position:fixed;inset:0;z-index:1000;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;}
+.registro-venta[hidden]{display:none;}
+.registro-venta>div{max-width:540px;}
+.registro-venta button{padding:16px 24px;border:0;border-radius:16px;background:#c60025;color:#fff;font-size:22px;}
+.registro-venta button[hidden]{display:none;}
+@media(max-width:480px){
+  .alianzas-panel{padding:16px 20px 28px;}
+  .alianzas-logo{height:130px;margin-bottom:24px;}
+  .alianza-empresa{gap:14px;padding:14px;}
+  .alianza-empresa img{width:90px;height:64px;}
+  .alianza-detalle strong{font-size:24px;}
+  .alianza-detalle>span{font-size:14px;}
+}
 /* Tercera pantalla: categorias en el orden de la referencia. */
 body.vista-categorias{background:#870b16;}
 .vista-categorias #app{max-width:none;height:100vh;height:100dvh;min-height:0;background:#870b16;box-shadow:none;}
