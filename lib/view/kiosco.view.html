@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="lib/css/kiosco.css?v=20261015-journal">
   <title>Kiosco de autoatención</title>
+  <link rel="stylesheet" href="lib/css/boleta.css?v=20261015-boleta">
 </head>
 <body class="inicio-kiosco" data-imagenes="referencia">
   <div id="app">
@@ -253,9 +254,10 @@
         <div class="final">
           <div class="check">&#10003;</div>
           <h2>&iexcl;Pedido confirmado!</h2>
-          <p>Retira tu comprobante impreso.</p>
+          <p>Imprime tu comprobante para retirar el pedido.</p>
           <div class="num" id="num-pedido">#000</div>
           <p id="final-detalle">1 producto &middot; $0</p>
+          <button type="button" class="btn btn-rojo btn-lg" id="imprimir-boleta" disabled>Imprimir boleta</button>
           <button class="btn btn-linea btn-lg" id="nuevo-pedido" style="margin-top:18px;">Nuevo pedido</button>
         </div>
       </section>
@@ -268,13 +270,15 @@
   <div id="toast"></div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="lib/js/utilidades.js?v=20261015-diagnostico-catalogo"></script>
+  <script src="lib/js/utilidades.js?v=20261015-extras-independientes"></script>
   <script src="lib/js/qrcode/qrcode.js"></script>
-  <script src="lib/js/ventas.js?v=20261015-journal"></script>
-  <script src="lib/js/kiosco.js?v=20261015-catalogo-reintento"></script>
+  <script src="lib/js/ventas.js?v=20261015-extras-independientes"></script>
+  <script src="lib/js/boleta.js?v=20261015-boleta"></script>
+  <script src="lib/js/kiosco.js?v=20261015-boleta"></script>
   <div id="registro-venta" class="registro-venta" role="dialog" aria-modal="true" aria-label="Confirmación del pedido" hidden>
     <div><p id="registro-venta-mensaje" role="status" aria-live="polite"></p>
     <button type="button" id="registro-venta-reintentar" hidden>Reintentar</button></div>
   </div>
+  <article id="boleta" aria-label="Comprobante de compra"></article>
 </body>
 </html>

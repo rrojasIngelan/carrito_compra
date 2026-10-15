@@ -48,7 +48,7 @@ let codigo = fs.readFileSync(path.join(__dirname,'../lib/js/kiosco.js'),'utf8');
 const cierre = codigo.lastIndexOf('});');
 codigo = codigo.slice(0,cierre) + `
 globalThis.qrPrueba={mostrarQrAlianza,mostrar,esperarLecturaQr,detenerLecturaQr,finalizar,reiniciar,
-    confirmarLinea,
+    confirmarLinea,sincronizarDetalleCarrito,
     configurarExtras:(producto,detalle)=>{estado.prodActual=producto;estado.detalle=detalle;estado.editUid=null;estado.carrito=[];},
     lineas:()=>estado.carrito,
     lectura:()=>lecturaQr,beneficios:()=>beneficiosAlianza,
@@ -103,16 +103,24 @@ const drenar=async()=>{for(let i=0;i<8;i++)await Promise.resolve();};
     const detalle = {cant:1,combo:null,quitar:[],extras:[{id:'14',nombre:'Bebida',precio:1600}]};
     ctx.qrPrueba.configurarExtras({id:'13',nombre:'Hamburguesa',precio:3000},detalle);
     ctx.qrPrueba.confirmarLinea(true);
-    assert.equal(ctx.qrPrueba.lineas().length,1,'selección guarda el producto con su extra');
+    assert.equal(ctx.qrPrueba.lineas().length,2,'selección guarda producto y extra en filas independientes');
     detalle.extras.push({id:'15',nombre:'Otra bebida',precio:1900});
     ctx.qrPrueba.confirmarLinea(true);
-    assert.equal(ctx.qrPrueba.lineas()[0].extras.length,2,'segunda selección actualiza el carrito');
+    assert.equal(ctx.qrPrueba.lineas().filter(l=>l.tipo_linea==='extra').length,2,'segunda selección agrega otra fila independiente');
     ctx.qrPrueba.confirmarLinea();
     ctx.qrPrueba.confirmarLinea();
-    assert.equal(ctx.qrPrueba.lineas().length,1,'continuar no duplica la selección guardada');
+    assert.equal(ctx.qrPrueba.lineas().length,3,'continuar no duplica la selección guardada');
     detalle.extras.splice(0,1);
     ctx.qrPrueba.confirmarLinea(true);
-    assert.equal(ctx.qrPrueba.lineas()[0].extras.length,1,'desmarcar elimina el extra guardado');
+    assert.equal(ctx.qrPrueba.lineas().length,2,'desmarcar elimina sólo la fila del extra');
+    ctx.qrPrueba.lineas().find(l=>l.tipo_linea==='extra').cant=3;
+    ctx.qrPrueba.sincronizarDetalleCarrito();
+    ctx.qrPrueba.confirmarLinea(true);
+    assert.equal(ctx.qrPrueba.lineas().find(l=>l.tipo_linea==='extra').cant,3,'mantiene cantidad independiente al volver a confirmar');
+    ctx.qrPrueba.carrito(ctx.qrPrueba.lineas().filter(l=>l.tipo_linea!=='extra'));
+    ctx.qrPrueba.sincronizarDetalleCarrito();
+    ctx.qrPrueba.confirmarLinea(true);
+    assert.equal(ctx.qrPrueba.lineas().length,1,'un extra eliminado no reaparece al volver');
     const combo = {cant:2,combo:{id:'combo',extra:1900},quitar:[],extras:[]};
     ctx.qrPrueba.configurarExtras({id:'13',nombre:'Hamburguesa',precio:3000},combo);
     ctx.qrPrueba.mostrar('extras');

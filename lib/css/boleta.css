@@ -1,0 +1,25 @@
+#boleta { display: none; }
+#boleta:not(:empty) { display: block; box-sizing: border-box; width: 80mm; max-width: 100%; margin: 24px auto; padding: 5mm; background: white; color: black; border: 1px solid #ddd; font: 12px/1.4 'Courier New', monospace; text-align: left; overflow-wrap: anywhere; }
+#boleta header, #boleta footer { text-align: center; }
+#boleta h1 { font-size: 15px; margin: 12px 0 4px; }
+#boleta p { margin: 8px 0; }
+#boleta .boleta-orden { background: black; color: white; font-size: 27px; font-weight: bold; padding: 5px; }
+#boleta table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+#boleta th { text-align: left; border-block: 1px dashed black; padding: 7px 0; font-size: 11px; }
+#boleta th:last-child { width: 25%; }
+#boleta .importe { text-align: right; }
+#boleta tbody tr:first-child td { padding-top: 7px; }
+#boleta .descuento { font-size: 11px; }
+#boleta dl { display: grid; grid-template-columns: 1fr auto; border-top: 1px dashed black; padding-top: 8px; }
+#boleta dd { margin: 0; text-align: right; }
+#boleta .boleta-total { font-size: 17px; font-weight: bold; margin-top: 6px; }
+#boleta footer { border-top: 1px dashed black; padding-top: 8px; }
+#boleta small { display: block; font-size: 10px; }
+@media print {
+    @page { size: auto; margin: 0; }
+    html, body { background: white !important; margin: 0 !important; padding: 0 !important; height: auto !important; min-height: 0 !important; overflow: visible !important; }
+    body > :not(#boleta) { display: none !important; }
+    #boleta:not(:empty) { display: block !important; border: 0; margin: 0; width: 80mm; max-width: none; }
+    #boleta .boleta-orden { background: white; color: black; border-block: 2px solid black; }
+    #boleta tr { break-inside: avoid; }
+}

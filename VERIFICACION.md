@@ -83,3 +83,22 @@ Prueba de fallos controlados `php tests/catalogo-reintento.php`: aprobada, cubri
 El diagnóstico enviado por el usuario confirmó HTTP 0 / cURL 60 (unable to get local issuer certificate), aunque el CA de php.ini existía y era legible. Se incorporó el paquete CA público de Mozilla distribuido por curl.se, verificado contra su SHA256 oficial. El DAO utiliza CURLOPT_CAINFO con la ruta relativa del proyecto, manteniendo CURLOPT_SSL_VERIFYPEER=true y CURLOPT_SSL_VERIFYHOST=2. El diagnóstico muestra ahora ese archivo efectivo.
 
 Comprobado en este equipo con el nuevo paquete: productos 40 y categorías 12, sin desactivar TLS. Pruebas de reintentos, CA configurado y rechazo de error de certificado aprobadas; suites Node y journal aprobadas. El test PHP de CA requirió ejecución fuera del entorno restringido del agente porque éste impide leer archivos .pem. Falta verificar en el equipo del usuario: una raíz privada de proxy/antivirus no está incluida automáticamente en el conjunto público de Mozilla.
+
+## Extras como productos independientes
+
+Los extras se guardan como filas propias del carrito con precio, imagen, cantidad y controles de edición/eliminación. Al confirmar o volver a la selección se reutilizan sus filas y cantidades; una eliminación no se revierte al regresar. La carga de carritos anteriores convierte los extras anidados a filas propias conservando cantidades e importes. El sales journal identifica esas filas como extra, sin cobrarlas otra vez en la línea principal.
+
+Pruebas ejecutadas: extras-carrito.cjs, qr-pantalla.cjs, sales-journal.cjs y estructura.cjs. Caso equivalente a la captura: combo $4.990 + agua $1.200 = $6.190; aumentar el agua a dos unidades produce $7.390 manteniendo un combo; eliminar el agua deja $4.990. También se comprobaron migración idempotente, conservación de cantidades al volver, eliminación persistente y journal sin duplicar importes. No se ejecutó una nueva prueba visual para esta modificación.
+
+## Comprobante imprimible del pedido
+
+Al confirmar una venta guardada en SQLite, el kiosco genera un ticket desde la misma instantánea del sales journal. Incluye Ingelan Autoservicios SpA, Arturo Claro 1465, Providencia, número de pedido, fecha de Santiago, productos, cantidades, precios, descuentos, total y medio/estado de pago. El comprobante del PMV no genera folio tributario ni timbre fiscal.
+
+Verificación manual:
+1. Recargar el kiosco con Ctrl+F5, agregar un combo y un extra, cambiar cantidades y completar el pago.
+2. En la confirmación, revisar el ticket y comparar sus líneas y total con el registro de ventas.
+3. Pulsar «Imprimir boleta». Seleccionar impresora y papel térmico de 80 mm, escala 100 %, sin encabezados/pies del navegador; también se puede guardar como PDF.
+4. Cancelar el diálogo y volver a imprimir: no debe crearse otra venta. «Nuevo pedido» limpia el ticket anterior.
+5. Probar una venta con alianza/cupón y otra en efectivo: deben verse los descuentos y el estado pendiente de pago en caja, respectivamente.
+
+Ejecutado: node tests/boleta.cjs, node tests/extras-carrito.cjs, node tests/qr-pantalla.cjs, node tests/sales-journal.cjs, node tests/beneficios-qr.cjs y node --check lib/js/kiosco.js. No se ha probado una impresora física ni el diálogo de impresión.
