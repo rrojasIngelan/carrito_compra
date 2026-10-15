@@ -6,7 +6,7 @@ Las próximas confirmaciones de pedido del kiosco quedan registradas automática
 
 Consultar desde el PC: **http://localhost/carro_compras/?vista=ventas**. El enrutamiento vuelve a la raíz y carga la vista internamente. Elegir fecha inicial/final para ver los pedidos y sus importes por medio de pago, abrir el detalle JSON de una venta o exportar todo el rango. El resumen incluye todo el rango aunque la tabla tenga varias páginas de 1.000 registros.
 
-La consulta y exportación están restringidas al propio equipo (127.0.0.1 / ::1). El archivo de base de datos está bloqueado por Apache y excluido de Git, incluidos sus archivos auxiliares. La base contiene datos operativos: conservarla al actualizar el código. Borrar los datos del navegador no elimina las ventas ya registradas en SQLite.
+Por solicitud del usuario, la consulta y exportación del PMV están abiertas a cualquier equipo que pueda acceder al servidor, sin autenticación. Desde otro PC usar http://IP-DEL-KIOSCO/carro_compras/?vista=ventas. El archivo de base de datos está bloqueado por Apache y excluido de Git, incluidos sus archivos auxiliares. La base contiene datos operativos: conservarla al actualizar el código. Borrar los datos del navegador no elimina las ventas ya registradas en SQLite.
 
 ## Qué se guarda
 

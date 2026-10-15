@@ -10,11 +10,7 @@ function registrarVenta($form) {
 }
 
 function listarVentas($form) {
-    // Registro local del PMV: consulta y exportación únicamente desde el propio equipo.
-    if (!in_array($_SERVER['REMOTE_ADDR'] ?? '',array('127.0.0.1','::1'),true)) {
-        http_response_code(403);
-        return array('error'=>'Consulta disponible sólo en el equipo del kiosco');
-    }
+    // PMV: consulta y exportación habilitadas desde cualquier equipo, por solicitud del usuario.
     $hoy = (new DateTimeImmutable('now',new DateTimeZone('America/Santiago')))->format('Y-m-d');
     $desde = $form['desde'] ?? $hoy; $hasta = $form['hasta'] ?? $hoy;
     if (!is_string($desde) || !is_string($hasta)) throw new InvalidArgumentException('Fecha inválida');
