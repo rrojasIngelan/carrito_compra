@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="lib/css/kiosco.css?v=20261015-journal">
+  <link rel="stylesheet" href="lib/css/kiosco.css?v=20261016-transition-test">
   <title>Kiosco de autoatención · Imágenes WS</title>
   <link rel="stylesheet" href="lib/css/boleta.css?v=20261015-envio">
 </head>
@@ -45,6 +45,8 @@
           <img class="identidad-imagen" src="lib/img/kiosco-identidad.png" width="1066" height="1476"
                alt="Ingelan Autoservicios. Identifícate y recibe beneficios exclusivos."
                draggable="false">
+          <span class="kiosco-cabecera-comun" aria-hidden="true"></span>
+          <button type="button" class="identidad-volver" id="identidad-volver" aria-label="Volver"><span aria-hidden="true">←</span> Volver</button>
           <button type="button" class="identidad-zona identidad-zona-app" id="btn-ident"
                   aria-label="Identifícate con tu app"></button>
           <button type="button" class="identidad-zona identidad-zona-invitado" id="btn-sin-ben"
@@ -55,13 +57,13 @@
       <section class="pantalla p-alianzas" data-p="alianzas" aria-labelledby="alianzas-titulo">
         <div class="alianzas-panel">
           <img class="alianzas-logo" src="lib/img/logo.png" alt="Ingelan autoservicios">
-          <h1 id="alianzas-titulo">Identifícate y recibe beneficios exclusivos</h1>
+          <h1 id="alianzas-titulo"><span>Identifícate y recibe</span><strong>beneficios exclusivos</strong></h1>
           <p class="alianzas-subtitulo">Selecciona tu alianza</p>
           <div id="alianzas-lista" class="alianzas-lista" aria-busy="false"></div>
           <p id="alianzas-estado" class="alianzas-estado" role="status" aria-live="polite"></p>
           <button type="button" id="alianzas-reintentar" class="alianzas-reintentar" hidden>Reintentar</button>
           <button type="button" id="alianzas-sin-beneficios" class="alianzas-continuar">Continuar sin beneficios</button>
-          <button type="button" id="alianzas-volver" class="alianzas-volver">← Volver</button>
+          <button type="button" id="alianzas-volver" class="alianzas-volver"><span aria-hidden="true">←</span><span>Volver</span></button>
         </div>
       </section>
       <section class="pantalla p-alianza-qr" data-p="alianza-qr" aria-labelledby="alianza-qr-titulo">
@@ -75,15 +77,16 @@
           <p><a id="alianza-qr-enlace" target="_blank" rel="noopener noreferrer" hidden>Abrir enlace de activación</a></p>
           <button type="button" id="alianza-qr-reintentar" class="alianzas-reintentar" hidden>Generar QR nuevo / Reintentar</button>
           <button type="button" id="alianza-qr-sin-beneficios" class="alianzas-continuar">Continuar sin beneficios</button>
-          <button type="button" id="alianza-qr-volver" class="alianzas-volver">← Volver</button>
+          <button type="button" id="alianza-qr-volver" class="alianzas-volver"><span aria-hidden="true">←</span><span>Volver</span></button>
         </div>
       </section>
       <!-- ============ 3. Categorías ============ -->
       <section class="pantalla p-categorias categorias-ws" data-p="categorias" aria-label="Menú de categorías">
         <div class="categorias-lamina">
           <img class="categorias-imagen" src="lib/img/kiosco-categorias.png" width="1076" height="1462" alt="Ingelan Autoservicios. Menú. Categorías. Buena comida, mejores momentos." draggable="false">
-          <button type="button" class="categorias-zona categorias-volver" id="categorias-volver" aria-label="Volver"></button>
-          <button type="button" class="categorias-zona categorias-carrito" id="categorias-carrito" aria-label="Ver carrito"><span id="categorias-badge">0</span></button>
+          <span class="kiosco-cabecera-comun" aria-hidden="true"></span>
+          <button type="button" class="categorias-zona categorias-volver" id="categorias-volver" aria-label="Volver"><span class="categorias-volver-flecha" aria-hidden="true">←</span><span>Volver</span></button>
+          <button type="button" class="categorias-zona categorias-carrito" id="categorias-carrito" aria-label="Ver carrito"><svg aria-hidden="true" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h6l5 27h23l5-20H12M20 18v9m8-9v9m8-9v9"/><circle cx="18" cy="41" r="2"/><circle cx="36" cy="41" r="2"/></svg><span id="categorias-badge">0</span></button>
           <div class="categorias-ws-panel"><div id="cat-grid" class="cat-grid"></div></div>
         </div>
       </section>
@@ -314,7 +317,7 @@
   <script src="lib/js/ventas.js?v=20261015-extras-independientes"></script>
   <script src="lib/js/pedidos-envio.js?v=20261015-envio"></script>
   <script src="lib/js/boleta.js?v=20261015-envio"></script>
-  <script src="lib/js/kiosco.js?v=20261016-categorias"></script>
+  <script src="lib/js/kiosco.js?v=20261016-volver"></script>
   <div id="registro-venta" class="registro-venta" role="dialog" aria-modal="true" aria-label="Confirmación del pedido" hidden>
     <div><p id="registro-venta-mensaje" role="status" aria-live="polite"></p>
     <button type="button" id="registro-venta-reintentar" hidden>Reintentar</button></div>
