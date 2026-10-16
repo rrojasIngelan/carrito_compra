@@ -47,7 +47,7 @@ class catalogoDAO {
             'cliente' => $parametros['cliente'],
             'sucursal' => $parametros['sucursal']
         );
-        if ($servicio !== 'urlEmpresasAlianza') $filtros['cod'] = $parametros['cod'];
+        if ($servicio === 'url') $filtros['cod'] = $parametros['cod'];
         $consulta = http_build_query($filtros);
         $certificadosCA = $this->archivoCertificadosCA();
         if (!is_readable($certificadosCA)) throw new RuntimeException('No se encuentra el paquete CA del proyecto; actualiza el repositorio completo');
@@ -79,6 +79,9 @@ class catalogoDAO {
             throw new RuntimeException(sprintf('Servicio %s: HTTP %d; cURL %d (%s)', $servicio, $estado, $numeroError, $detalleError));
         }
         $result = json_decode($contenido, true);
+        if (is_array($result) && isset($result['estado']) && (int)$result['estado'] === 4) {
+            $result['list'] = array();
+        }
         if (!is_array($result) || !isset($result['list']) || !is_array($result['list'])) {
             throw new RuntimeException('Respuesta de catálogo inválida en ' . $servicio . ': ' . json_last_error_msg());
         }
